@@ -90,16 +90,31 @@ function updatePreview() {
     document.getElementById('preview-location').className = location ? '' : 'preview-placeholder';
     
     // Links
+    const linkedinPreview = document.getElementById('preview-linkedin');
+    const websitePreview = document.getElementById('preview-website');
+    
     if (linkedin && isValidUrl(linkedin)) {
-        document.getElementById('preview-linkedin').innerHTML = `<a href="${linkedin}" target="_blank" rel="noopener noreferrer">LinkedIn</a>`;
+        linkedinPreview.innerHTML = '';
+        const linkedinLink = document.createElement('a');
+        linkedinLink.href = linkedin;
+        linkedinLink.target = '_blank';
+        linkedinLink.rel = 'noopener noreferrer';
+        linkedinLink.textContent = 'LinkedIn';
+        linkedinPreview.appendChild(linkedinLink);
     } else {
-        document.getElementById('preview-linkedin').textContent = '';
+        linkedinPreview.textContent = '';
     }
     
     if (website && isValidUrl(website)) {
-        document.getElementById('preview-website').innerHTML = `<a href="${website}" target="_blank" rel="noopener noreferrer">Website</a>`;
+        websitePreview.innerHTML = '';
+        const websiteLink = document.createElement('a');
+        websiteLink.href = website;
+        websiteLink.target = '_blank';
+        websiteLink.rel = 'noopener noreferrer';
+        websiteLink.textContent = 'Website';
+        websitePreview.appendChild(websiteLink);
     } else {
-        document.getElementById('preview-website').textContent = '';
+        websitePreview.textContent = '';
     }
     
     // Professional Summary
@@ -119,9 +134,13 @@ function updatePreview() {
     
     if (skills) {
         const skillsArray = skills.split(',').map(s => s.trim()).filter(s => s);
-        skillsContainer.innerHTML = skillsArray.map(skill => 
-            `<span class="skill-tag">${skill}</span>`
-        ).join('');
+        skillsContainer.innerHTML = '';
+        skillsArray.forEach(skill => {
+            const skillTag = document.createElement('span');
+            skillTag.className = 'skill-tag';
+            skillTag.textContent = skill;
+            skillsContainer.appendChild(skillTag);
+        });
         skillsSection.style.display = 'block';
     } else {
         skillsSection.style.display = 'none';
@@ -169,8 +188,8 @@ function updateExperiencePreview() {
     const previewContainer = document.getElementById('preview-experience');
     const experienceSection = document.getElementById('preview-experience-section');
     
+    previewContainer.innerHTML = '';
     let hasExperience = false;
-    let html = '';
     
     experienceItems.forEach(item => {
         const title = item.querySelector('.exp-title').value;
@@ -180,21 +199,43 @@ function updateExperiencePreview() {
         
         if (title || company || date || description) {
             hasExperience = true;
-            html += `
-                <div class="experience-entry">
-                    <div class="entry-header">
-                        <span class="entry-title">${title || 'Job Title'}</span>
-                        <span class="entry-date">${date || 'Date Range'}</span>
-                    </div>
-                    <div class="entry-subtitle">${company || 'Company Name'}</div>
-                    ${description ? `<div class="entry-description">${description}</div>` : ''}
-                </div>
-            `;
+            
+            const entryDiv = document.createElement('div');
+            entryDiv.className = 'experience-entry';
+            
+            const headerDiv = document.createElement('div');
+            headerDiv.className = 'entry-header';
+            
+            const titleSpan = document.createElement('span');
+            titleSpan.className = 'entry-title';
+            titleSpan.textContent = title || 'Job Title';
+            
+            const dateSpan = document.createElement('span');
+            dateSpan.className = 'entry-date';
+            dateSpan.textContent = date || 'Date Range';
+            
+            headerDiv.appendChild(titleSpan);
+            headerDiv.appendChild(dateSpan);
+            
+            const subtitleDiv = document.createElement('div');
+            subtitleDiv.className = 'entry-subtitle';
+            subtitleDiv.textContent = company || 'Company Name';
+            
+            entryDiv.appendChild(headerDiv);
+            entryDiv.appendChild(subtitleDiv);
+            
+            if (description) {
+                const descDiv = document.createElement('div');
+                descDiv.className = 'entry-description';
+                descDiv.textContent = description;
+                entryDiv.appendChild(descDiv);
+            }
+            
+            previewContainer.appendChild(entryDiv);
         }
     });
     
     if (hasExperience) {
-        previewContainer.innerHTML = html;
         experienceSection.style.display = 'block';
     } else {
         experienceSection.style.display = 'none';
@@ -238,8 +279,8 @@ function updateEducationPreview() {
     const previewContainer = document.getElementById('preview-education');
     const educationSection = document.getElementById('preview-education-section');
     
+    previewContainer.innerHTML = '';
     let hasEducation = false;
-    let html = '';
     
     educationItems.forEach(item => {
         const degree = item.querySelector('.edu-degree').value;
@@ -249,21 +290,43 @@ function updateEducationPreview() {
         
         if (degree || school || date || gpa) {
             hasEducation = true;
-            html += `
-                <div class="education-entry">
-                    <div class="entry-header">
-                        <span class="entry-title">${degree || 'Degree'}</span>
-                        <span class="entry-date">${date || 'Graduation Date'}</span>
-                    </div>
-                    <div class="entry-subtitle">${school || 'School Name'}</div>
-                    ${gpa ? `<div class="entry-description">${gpa}</div>` : ''}
-                </div>
-            `;
+            
+            const entryDiv = document.createElement('div');
+            entryDiv.className = 'education-entry';
+            
+            const headerDiv = document.createElement('div');
+            headerDiv.className = 'entry-header';
+            
+            const titleSpan = document.createElement('span');
+            titleSpan.className = 'entry-title';
+            titleSpan.textContent = degree || 'Degree';
+            
+            const dateSpan = document.createElement('span');
+            dateSpan.className = 'entry-date';
+            dateSpan.textContent = date || 'Graduation Date';
+            
+            headerDiv.appendChild(titleSpan);
+            headerDiv.appendChild(dateSpan);
+            
+            const subtitleDiv = document.createElement('div');
+            subtitleDiv.className = 'entry-subtitle';
+            subtitleDiv.textContent = school || 'School Name';
+            
+            entryDiv.appendChild(headerDiv);
+            entryDiv.appendChild(subtitleDiv);
+            
+            if (gpa) {
+                const descDiv = document.createElement('div');
+                descDiv.className = 'entry-description';
+                descDiv.textContent = gpa;
+                entryDiv.appendChild(descDiv);
+            }
+            
+            previewContainer.appendChild(entryDiv);
         }
     });
     
     if (hasEducation) {
-        previewContainer.innerHTML = html;
         educationSection.style.display = 'block';
     } else {
         educationSection.style.display = 'none';
