@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Maker - Create Your Professional Resume in Minutes</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Resume Maker</h1>
+            <p class="tagline">Make your resume stand out with our incredibly easy-to-use Resume Maker. Turn hours of work into minutes</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="app-wrapper">
+            <div class="form-section">
+                <h2>Build Your Resume</h2>
+                
+                <!-- Personal Information -->
+                <section class="form-group">
+                    <h3>Personal Information</h3>
+                    <input type="text" id="fullName" placeholder="Full Name" class="form-input">
+                    <input type="text" id="title" placeholder="Professional Title (e.g., Software Engineer)" class="form-input">
+                    <input type="email" id="email" placeholder="Email Address" class="form-input">
+                    <input type="tel" id="phone" placeholder="Phone Number" class="form-input">
+                    <input type="text" id="location" placeholder="Location (City, State)" class="form-input">
+                    <input type="url" id="linkedin" placeholder="LinkedIn Profile (optional)" class="form-input">
+                    <input type="url" id="website" placeholder="Personal Website (optional)" class="form-input">
+                </section>
+
+                <!-- Professional Summary -->
+                <section class="form-group">
+                    <h3>Professional Summary</h3>
+                    <textarea id="summary" placeholder="Brief professional summary highlighting your key achievements and skills..." class="form-textarea" rows="4"></textarea>
+                </section>
+
+                <!-- Experience -->
+                <section class="form-group">
+                    <h3>Work Experience</h3>
+                    <div id="experienceContainer"></div>
+                    <button type="button" class="btn btn-secondary" onclick="addExperience()">+ Add Experience</button>
+                </section>
+
+                <!-- Education -->
+                <section class="form-group">
+                    <h3>Education</h3>
+                    <div id="educationContainer"></div>
+                    <button type="button" class="btn btn-secondary" onclick="addEducation()">+ Add Education</button>
+                </section>
+
+                <!-- Skills -->
+                <section class="form-group">
+                    <h3>Skills</h3>
+                    <textarea id="skills" placeholder="Enter your skills separated by commas (e.g., JavaScript, Python, Project Management, Communication)" class="form-textarea" rows="3"></textarea>
+                </section>
+
+                <!-- Template Selection -->
+                <section class="form-group">
+                    <h3>Choose Template</h3>
+                    <div class="template-selector">
+                        <label class="template-option">
+                            <input type="radio" name="template" value="modern" checked>
+                            <span>Modern</span>
+                        </label>
+                        <label class="template-option">
+                            <input type="radio" name="template" value="classic">
+                            <span>Classic</span>
+                        </label>
+                        <label class="template-option">
+                            <input type="radio" name="template" value="minimal">
+                            <span>Minimal</span>
+                        </label>
+                    </div>
+                </section>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button type="button" class="btn btn-primary" onclick="window.print()">Download PDF</button>
+                    <button type="button" class="btn btn-secondary" onclick="clearForm()">Clear All</button>
+                </div>
+            </div>
+
+            <div class="preview-section">
+                <div class="preview-header">
+                    <h2>Live Preview</h2>
+                    <button type="button" class="btn-icon" onclick="window.print()" title="Download PDF">📄</button>
+                </div>
+                <div id="resumePreview" class="resume-preview modern">
+                    <div class="resume-content">
+                        <div class="resume-header">
+                            <h1 id="preview-name" class="preview-placeholder">Your Name</h1>
+                            <p id="preview-title" class="preview-placeholder">Your Professional Title</p>
+                            <div class="contact-info">
+                                <span id="preview-email" class="preview-placeholder">email@example.com</span>
+                                <span id="preview-phone" class="preview-placeholder">+1 (555) 123-4567</span>
+                                <span id="preview-location" class="preview-placeholder">City, State</span>
+                            </div>
+                            <div class="contact-links">
+                                <span id="preview-linkedin"></span>
+                                <span id="preview-website"></span>
+                            </div>
+                        </div>
+
+                        <div id="preview-summary-section" class="resume-section" style="display: none;">
+                            <h2>Professional Summary</h2>
+                            <p id="preview-summary"></p>
+                        </div>
+
+                        <div id="preview-experience-section" class="resume-section" style="display: none;">
+                            <h2>Work Experience</h2>
+                            <div id="preview-experience"></div>
+                        </div>
+
+                        <div id="preview-education-section" class="resume-section" style="display: none;">
+                            <h2>Education</h2>
+                            <div id="preview-education"></div>
+                        </div>
+
+                        <div id="preview-skills-section" class="resume-section" style="display: none;">
+                            <h2>Skills</h2>
+                            <div id="preview-skills" class="skills-list"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Resume Maker. Create professional resumes in minutes.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
