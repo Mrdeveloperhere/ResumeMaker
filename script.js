@@ -2,11 +2,29 @@
 let experienceCount = 0;
 let educationCount = 0;
 
+// Helper function to escape HTML and prevent XSS
+function escapeHtml(unsafe) {
+    if (!unsafe) return '';
+    return unsafe
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
 // Initialize the app
 document.addEventListener('DOMContentLoaded', function() {
-    // Add initial experience and education items
-    addExperience();
-    addEducation();
+    // Load saved data first
+    loadSavedData();
+    
+    // Add initial experience and education items if none loaded
+    if (document.querySelectorAll('.experience-item').length === 0) {
+        addExperience();
+    }
+    if (document.querySelectorAll('.education-item').length === 0) {
+        addEducation();
+    }
     
     // Add event listeners to all form inputs
     setupEventListeners();
@@ -15,6 +33,9 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('input[name="template"]').forEach(radio => {
         radio.addEventListener('change', changeTemplate);
     });
+    
+    // Update preview with any loaded data
+    updatePreview();
 });
 
 // Setup event listeners for real-time preview
@@ -59,13 +80,15 @@ function updatePreview() {
     
     // Links
     if (linkedin) {
-        document.getElementById('preview-linkedin').innerHTML = `<a href="${linkedin}" target="_blank">LinkedIn</a>`;
+        const sanitizedLinkedin = escapeHtml(linkedin);
+        document.getElementById('preview-linkedin').innerHTML = `<a href="${sanitizedLinkedin}" target="_blank" rel="noopener noreferrer">LinkedIn</a>`;
     } else {
         document.getElementById('preview-linkedin').textContent = '';
     }
     
     if (website) {
-        document.getElementById('preview-website').innerHTML = `<a href="${website}" target="_blank">Website</a>`;
+        const sanitizedWebsite = escapeHtml(website);
+        document.getElementById('preview-website').innerHTML = `<a href="${sanitizedWebsite}" target="_blank" rel="noopener noreferrer">Website</a>`;
     } else {
         document.getElementById('preview-website').textContent = '';
     }
@@ -280,8 +303,40 @@ function autoSave() {
         linkedin: document.getElementById('linkedin').value,
         website: document.getElementById('website').value,
         summary: document.getElementById('summary').value,
-        skills: document.getElementById('skills').value
+        skills: document.getElementById('skills').value,
+        experience: [],
+        education: []
     };
+    
+    // Save experience entries
+    document.querySelectorAll('.experience-item').forEach(item => {
+        const expData = {
+            id: item.id.split('-')[1],
+            title: item.querySelector('.exp-title').value,
+            company: item.querySelector('.exp-company').value,
+            date: item.querySelector('.exp-date').value,
+            description: item.querySelector('.exp-description').value
+        };
+        data.experience.push(expData);
+    });
+    
+    // Save education entries
+    document.querySelectorAll('.education-item').forEach(item => {
+        const eduData = {
+            id: item.id.split('-')[1],
+            degree: item.querySelector('.edu-degree').value,
+            school: item.querySelector('.edu-school').value,
+            date: item.querySelector('.edu-date').value,
+            gpa: item.querySelector('.edu-gpa').value
+        };
+        data.education.push(eduData);
+    });
+    
+    // Save selected template
+    const selectedTemplate = document.querySelector('input[name="template"]:checked');
+    if (selectedTemplate) {
+        data.template = selectedTemplate.value;
+    }
     
     localStorage.setItem('resumeData', JSON.stringify(data));
 }
@@ -291,6 +346,8 @@ function loadSavedData() {
     const saved = localStorage.getItem('resumeData');
     if (saved) {
         const data = JSON.parse(saved);
+        
+        // Load personal information
         document.getElementById('fullName').value = data.fullName || '';
         document.getElementById('title').value = data.title || '';
         document.getElementById('email').value = data.email || '';
@@ -301,7 +358,38 @@ function loadSavedData() {
         document.getElementById('summary').value = data.summary || '';
         document.getElementById('skills').value = data.skills || '';
         
-        updatePreview();
+        // Load experience entries
+        if (data.experience && data.experience.length > 0) {
+            data.experience.forEach(exp => {
+                addExperience();
+                const item = document.querySelector('.experience-item:last-child');
+                item.querySelector('.exp-title').value = exp.title || '';
+                item.querySelector('.exp-company').value = exp.company || '';
+                item.querySelector('.exp-date').value = exp.date || '';
+                item.querySelector('.exp-description').value = exp.description || '';
+            });
+        }
+        
+        // Load education entries
+        if (data.education && data.education.length > 0) {
+            data.education.forEach(edu => {
+                addEducation();
+                const item = document.querySelector('.education-item:last-child');
+                item.querySelector('.edu-degree').value = edu.degree || '';
+                item.querySelector('.edu-school').value = edu.school || '';
+                item.querySelector('.edu-date').value = edu.date || '';
+                item.querySelector('.edu-gpa').value = edu.gpa || '';
+            });
+        }
+        
+        // Load template selection
+        if (data.template) {
+            const templateRadio = document.querySelector(`input[name="template"][value="${data.template}"]`);
+            if (templateRadio) {
+                templateRadio.checked = true;
+                changeTemplate({ target: templateRadio });
+            }
+        }
     }
 }
 
