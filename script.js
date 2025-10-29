@@ -96,11 +96,17 @@ function updatePreview() {
     if (linkedin && isValidUrl(linkedin)) {
         linkedinPreview.innerHTML = '';
         const linkedinLink = document.createElement('a');
-        linkedinLink.href = linkedin;
-        linkedinLink.target = '_blank';
-        linkedinLink.rel = 'noopener noreferrer';
-        linkedinLink.textContent = 'LinkedIn';
-        linkedinPreview.appendChild(linkedinLink);
+        try {
+            const linkedinUrl = new URL(linkedin);
+            linkedinLink.href = linkedinUrl.href; // Use sanitized URL
+            linkedinLink.target = '_blank';
+            linkedinLink.rel = 'noopener noreferrer';
+            linkedinLink.textContent = 'LinkedIn';
+            linkedinPreview.appendChild(linkedinLink);
+        } catch (e) {
+            // URL validation failed, don't show link
+            linkedinPreview.textContent = '';
+        }
     } else {
         linkedinPreview.textContent = '';
     }
@@ -108,11 +114,17 @@ function updatePreview() {
     if (website && isValidUrl(website)) {
         websitePreview.innerHTML = '';
         const websiteLink = document.createElement('a');
-        websiteLink.href = website;
-        websiteLink.target = '_blank';
-        websiteLink.rel = 'noopener noreferrer';
-        websiteLink.textContent = 'Website';
-        websitePreview.appendChild(websiteLink);
+        try {
+            const websiteUrl = new URL(website);
+            websiteLink.href = websiteUrl.href; // Use sanitized URL
+            websiteLink.target = '_blank';
+            websiteLink.rel = 'noopener noreferrer';
+            websiteLink.textContent = 'Website';
+            websitePreview.appendChild(websiteLink);
+        } catch (e) {
+            // URL validation failed, don't show link
+            websitePreview.textContent = '';
+        }
     } else {
         websitePreview.textContent = '';
     }
