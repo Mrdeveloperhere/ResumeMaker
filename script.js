@@ -13,6 +13,17 @@ function escapeHtml(unsafe) {
         .replace(/'/g, "&#039;");
 }
 
+// Helper function to validate and sanitize URLs
+function isValidUrl(string) {
+    try {
+        const url = new URL(string);
+        // Only allow http and https protocols
+        return url.protocol === 'http:' || url.protocol === 'https:';
+    } catch (_) {
+        return false;
+    }
+}
+
 // Initialize the app
 document.addEventListener('DOMContentLoaded', function() {
     // Load saved data first
@@ -79,16 +90,14 @@ function updatePreview() {
     document.getElementById('preview-location').className = location ? '' : 'preview-placeholder';
     
     // Links
-    if (linkedin) {
-        const sanitizedLinkedin = escapeHtml(linkedin);
-        document.getElementById('preview-linkedin').innerHTML = `<a href="${sanitizedLinkedin}" target="_blank" rel="noopener noreferrer">LinkedIn</a>`;
+    if (linkedin && isValidUrl(linkedin)) {
+        document.getElementById('preview-linkedin').innerHTML = `<a href="${linkedin}" target="_blank" rel="noopener noreferrer">LinkedIn</a>`;
     } else {
         document.getElementById('preview-linkedin').textContent = '';
     }
     
-    if (website) {
-        const sanitizedWebsite = escapeHtml(website);
-        document.getElementById('preview-website').innerHTML = `<a href="${sanitizedWebsite}" target="_blank" rel="noopener noreferrer">Website</a>`;
+    if (website && isValidUrl(website)) {
+        document.getElementById('preview-website').innerHTML = `<a href="${website}" target="_blank" rel="noopener noreferrer">Website</a>`;
     } else {
         document.getElementById('preview-website').textContent = '';
     }
